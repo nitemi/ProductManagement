@@ -1,0 +1,184 @@
+﻿@*@model ProductEditViewModel
+
+@{
+    ViewBag.Title = "EditProduct";
+    var photoPath = "~/Images/" + (Model.ExistingPhotoPath ?? "new.jpeg");
+}
+
+
+<h2>EditProduct</h2>
+
+
+@using (Html.BeginForm("Edit", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+<div class="form-horizontal">
+    @Html.ValidationSummary(true, "", new { @class = "text -danger" })
+     @Html.HiddenFor(model => model.ExistingPhotoPath)
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div>
+            @Html.EditorFor(model => model.Name)
+            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div>
+            @Html.EditorFor(model => model.Description)
+            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    
+           
+    <div class="form-group">
+        @Html.LabelFor(model => model.Category, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div>
+           @Html.DropDownList("ProductCate", new SelectList(Enum.GetValues(typeof(Cate))), "Select Category",new{@class = "form-control"})
+            @* <select asp-for="Category" asp-items = "Html.GetEnumSelectList<Cate>()"></select> 
+
+             @Html.ValidationMessageFor(model => model.Category, "", new { @class = "text-danger" })
+        </div> 
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.Photo, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div>
+            <input type="file" name="Photo" multiple id="image-input" />
+            @Html.ValidationMessageFor(model => model.Photo, "", new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-7">
+                    <input type="submit" value="Update" class="btn btn-primary" />
+                </div>
+                <div class="col-md-6">
+                    @Html.ActionLink("Back to Index", "Index", null, new { @class = "btn btn-primary text-align-right" })
+                </div>
+
+                
+            </div>
+        </div>
+    
+        </div>
+    </div>
+    }
+
+    @section Scripts {
+            <script>
+                $(document).ready(function () {
+                    $('.custom-file-input').on("change", function () {
+                        var fileName = $(this).val().split("\\").pop();
+                        $(this).next('.custom-file-label').html(fileName);
+                    });
+                });
+              </script>
+    }*@
+    @model ProductEditViewModel
+
+@{
+    ViewBag.Title = "Edit Products";
+    var photoPath = "~/Images/" + (Model.ExistingPhotoPath ?? "new.jpeg");
+}
+
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h4>Edit Product</h4>
+        </div>
+        <div class="class-body">
+<form enctype="multi-part/form-data" asp-controller="home" asp-action="edit" method="post" class="mt-3">
+    <input hidden asp-for="Id" />
+    <input hidden asp-for="ExistingPhotoPath" />
+    <div class="row">
+        <div class="col-8">
+
+    <div class ="form-group row">
+        <label asp-for="Name" class="col=sm-2 col-form-label"></label>
+        <div class="col-sm-10">
+        <input asp-for="Name" class="form-control" placeholder="Name">
+            <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    </div>
+
+    <div class="form-group row">
+        <label asp-for="Description" class="col=sm-2 col-form-label"></label>
+        <div class="col-sm-10">
+            <input asp-for="Description" class="form-control" placeholder="Description">
+            <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+    </div>
+
+    <div class="form-group row">
+        <label asp-for="Category" class="col=sm-2 col-form-label"></label>
+            <div class="col-sm-10">
+    <select asp-for="Category" class="custom-select mr-sm-2" asp-items="Html.GetEnumSelectList<Cate>()">
+            <option value="">Please Select</option>
+            </select>
+            <span asp-validation-for="Category" class="text-danger"></span>
+    </div>
+    </div>
+
+   @*  <div class="form-group row">
+         <label asp-for="Photo" class="col-sm-2 col-form-label"></label>
+             <div class="col-sm-10">
+                    <div class="custom-file">
+             <input multiple asp-for="Photo" class="form-control custom-file-input"> *@
+
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label" for="Photo">Photo</label>
+                            <div class="col-sm-10">
+                                <div class="custom-file">
+                                    <input class="form-control custom-file-input" type="file" id="Photo" name="Photo">
+                                    <label class="custom-file-label">Choose File....</label>
+                    </div>
+                     </div>
+                        </div>
+
+    <div class="form-group row col-sm-4 offset-4">
+    <img src ="@photoPath" class="imageThumbnail" asp-append-version="true" />
+    </div>
+ 
+    <div asp-validation-summary="All" class="text-danger"></div>
+    </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-sm-10">
+        <button type="submit" class="btn btn-primary">Update</button>
+        <a asp-controller ="home" asp-action="index"
+        class="btn btn-primary">Cancel</a>
+    </div>
+    </div>
+    
+    
+    @section Scripts {
+        <script>
+            $(document).ready(function () {
+                $('.custom-file-input').on("change", function () {
+                    var fileName = $(this).val().split("\\").pop();
+                    $(this).next('.custom-file-label').html(fileName);
+                    // var fileLabel = $(this).next('.custom-file-label');
+                    // var files =.html(fileName);
+                    // var files = $(this)[0].files;
+                    // if (files.length > 1) {
+                    //     fileLabel.html(files.length + ' files selected ');
+                    // }
+                    // else if (files.length == 1) {
+                    //     fileLabel.html(files[0].name);
+                    // }
+                });
+            });
+        </script>
+    }
+
+            </form>
+        </div>
+    </div>
+</div>
+    @* <div class="form-group row">
+        <div class="col-sm-10">
+            Total Products Count = @_prodRepository.GetAllProduct().Count()
+            </div>
+            </div> *@
